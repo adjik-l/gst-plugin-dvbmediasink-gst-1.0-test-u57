@@ -27,4 +27,4 @@ FILES_${PN}-dbg += "${libdir}/gstreamer-1.0/.debug"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-EXTRA_OECONF = "--with-wma --with-wmv --with-pcm --with-dtsdownmix --with-h265 --with-vb9 --with-eac3"
+EXTRA_OECONF = "--with-machine=${MACHINE} --with-wma --with-wmv --with-pcm --with-dtsdownmix --with-h265 --with-vb9 --with-eac3"

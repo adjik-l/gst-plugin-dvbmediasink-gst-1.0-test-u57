@@ -56,8 +56,6 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DVBVIDEOSINK,GstDVBVideoSink))
 #define GST_DVBVIDEOSINK_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_DVBVIDEOSINK,GstDVBVideoSinkClass))
-#define GST_DVBVIDEOSINK_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj),GST_TYPE_DVBVIDEOSINK,GstDVBVideoSinkClass))
 #define GST_IS_DVBVIDEOSINK(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DVBVIDEOSINK))
 #define GST_IS_DVBVIDEOSINK_CLASS(klass) \
@@ -67,65 +65,7 @@ typedef struct _GstDVBVideoSink		GstDVBVideoSink;
 typedef struct _GstDVBVideoSinkClass	GstDVBVideoSinkClass;
 typedef struct _GstDVBVideoSinkPrivate	GstDVBVideoSinkPrivate;
 
-typedef enum {
-	CT_UNKNOWN = -1,
-	CT_MPEG1 = 0,
-	CT_MPEG2 = 1,
-	CT_H264 = 2,
-	CT_DIVX311 = 3,
-	CT_DIVX4 = 4,
-	CT_MPEG4_PART2 = 5, 
-	CT_VC1 = 6,
-	CT_VC1_SM = 7,
-	CT_H265 = 8,
-	CT_SPARK = 9,
-	CT_VP6 = 10,
-	CT_VP8 = 11,
-	CT_VP9 = 12
-} t_codec_type;
-#if defined(DREAMBOX)
-typedef enum {
-	STREAMTYPE_UNKNOWN = -1,
-	STREAMTYPE_MPEG2 = 0,
-	STREAMTYPE_MPEG4_H264 = 1,
-	STREAMTYPE_H263 = 2,
-	STREAMTYPE_MPEG4_Part2 = 4,
-	STREAMTYPE_MPEG1 = 6,
-	STREAMTYPE_MPEG4_H265 = 22,
-	STREAMTYPE_XVID = 10,
-	STREAMTYPE_DIVX311 = 13,
-	STREAMTYPE_DIVX4 = 14,
-	STREAMTYPE_DIVX5 = 15,
-	STREAMTYPE_VC1 = 16,
-	STREAMTYPE_VC1_SM = 17,
-	STREAMTYPE_VB6 = 18,
-	STREAMTYPE_VB8 = 20,
-	STREAMTYPE_VB9 = 23,
-	STREAMTYPE_SPARK = 21
-} t_stream_type;
-#endif
-#if defined(TYPE2) && !defined(DREAMBOX)
-typedef enum {
-	STREAMTYPE_UNKNOWN = -1,
-	STREAMTYPE_MPEG2 = 0,
-	STREAMTYPE_MPEG4_H264 = 1,
-	STREAMTYPE_H263 = 2,
-	STREAMTYPE_VC1 = 3,
-	STREAMTYPE_MPEG4_Part2 = 4,
-	STREAMTYPE_VC1_SM = 5,
-	STREAMTYPE_MPEG1 = 6,
-	STREAMTYPE_MPEG4_H265 = 7,
-	STREAMTYPE_XVID = 10,
-	STREAMTYPE_DIVX311 = 13,
-	STREAMTYPE_DIVX4 = 14,
-	STREAMTYPE_DIVX5 = 15,
-	STREAMTYPE_VB6 = 18,
-	STREAMTYPE_VB8 = 20,
-	STREAMTYPE_VB9 = 23,
-	STREAMTYPE_SPARK = 21
-} t_stream_type;
-#endif
-#if !defined(TYPE2) && !defined(DREAMBOX)
+typedef enum { CT_MPEG1, CT_MPEG2, CT_H264, CT_DIVX311, CT_DIVX4, CT_MPEG4_PART2, CT_VC1, CT_VC1_SM, CT_H265, CT_SPARK, CT_VP6, CT_VP8, CT_VP9 } t_codec_type;
 typedef enum {
 	STREAMTYPE_UNKNOWN = -1,
 	STREAMTYPE_MPEG2 = 0,
@@ -143,9 +83,9 @@ typedef enum {
 	STREAMTYPE_DIVX4 = 14,
 	STREAMTYPE_DIVX5 = 15,
 	STREAMTYPE_VB6 = 18,
-	STREAMTYPE_SPARK = 21
+	STREAMTYPE_SPARK = 21,
 } t_stream_type;
-#endif
+
 struct _GstDVBVideoSink
 {
 	GstBaseSink element;
@@ -154,7 +94,6 @@ struct _GstDVBVideoSink
 	int unlockfd[2];
 
 	gint h264_nal_len_size;
-	gboolean h264_initial_audelim_written;
 
 	GstBuffer *pesheader_buffer;
 
@@ -163,18 +102,21 @@ struct _GstDVBVideoSink
 	t_stream_type stream_type;
 	gboolean use_dts;
 
+#ifdef PACK_UNPACKED_XVID_DIVX5_BITSTREAM
+	/* data needed to pack bitstream (divx5 / xvid) */
+	gint num_non_keyframes, time_inc_bits, time_inc;
+	gboolean must_pack_bitstream;
+	GstBuffer *prev_frame;
+#endif
+
 	char saved_fallback_framerate[16];
 
 	gdouble rate;
-	gboolean playing, paused, flushing, unlocking, flushed, first_paused;
-	gboolean using_dts_downmix;
-	gboolean pts_written, synchronized, pass_eos;
+	gboolean playing, paused, flushing, unlocking;
+	gboolean pts_written;
 	gint64 lastpts;
 	gint64 timestamp_offset;
-	gboolean must_send_header, wmv_asf;
-	gint8 ok_to_write;
-
-	gboolean use_set_encoding;
+	gboolean must_send_header;
 
 	queue_entry_t *queue;
 };

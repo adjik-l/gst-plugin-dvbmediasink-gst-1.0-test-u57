@@ -273,7 +273,7 @@ AC_ARG_WITH(machine,
 	[machine=$withval],[machine=generic])
 AC_SUBST(machine)
 AC_DEFINE_UNQUOTED(machine,"$machine",[machine])
-if test "$machine" == "u57"; then
+if test "$machine" == "u53" -o "$machine" == "u57" -o "$machine" == "viper4kv20"; then
 	AC_DEFINE([HISILICON],[1],[build for HISILICON ])
 fi
 DTS_LIBS="-ldca $LIBM"

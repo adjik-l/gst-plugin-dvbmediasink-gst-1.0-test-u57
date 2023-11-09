@@ -268,11 +268,48 @@ if test "$have_dtsdownmix" = "yes"; then
 	AC_DEFINE([HAVE_DTSDOWNMIX],[1],[Define to 1 for DTS downmix support])
 fi
 
+AC_ARG_WITH(max_pcmrate_48K,
+	AS_HELP_STRING([--with-max-pcmrate-48K],[Max PCM rate 48K, yes or no]),
+	[max_pcmrate_48K=$withval],[max_pcmrate_48K=no])
+if test "$max_pcmrate_48K" = "yes"; then
+	AC_DEFINE([MAX_PCMRATE_48K],[1],[Max PCM rate 48K, yes or no ])
+fi
+
+AC_ARG_WITH(dags,
+	AS_HELP_STRING([--with-dags],[build for dags, yes or no]),
+	[dags=$withval],[dags=no])
+if test "$dags" = "yes"; then
+	AC_DEFINE([DAGS],[1],[build for dags, yes or no ])
+fi
+
+AC_ARG_WITH(boxtype,
+	AS_HELP_STRING([--with-boxtype],[build for BOXTYPE, $withval]),
+	[BOXTYPE=$withval],[BOXTYPE=""])
+AC_SUBST(BOXTYPE)
+AC_DEFINE_UNQUOTED(BOXTYPE,"$BOXTYPE",[box type])
+
+AC_ARG_WITH(boxbrand,
+	AS_HELP_STRING([--with-boxbrand],[build for BOXBRAND, $withval]),
+	[BOXBRAND="$withval"],[BOXBRAND=""])
+AC_SUBST(BOXBRAND)
+AC_DEFINE_UNQUOTED(BOXBRAND,"$BOXBRAND",[box brand])
+
+AC_ARG_WITH(stbplatform,
+	AS_HELP_STRING([--with-stbplatform],[build for STBPLATFORM, $withval]),
+	[STBPLATFORM="$withval"],[STBPLATFORM=""])
+AC_SUBST(STBPLATFORM)
+AC_DEFINE_UNQUOTED(STBPLATFORM,"$STBPLATFORM",[stb platform])
+
 AC_ARG_WITH(machine,
 	AS_HELP_STRING([--with-machine],[build for machine, $withval]),
 	[machine=$withval],[machine=generic])
 AC_SUBST(machine)
 AC_DEFINE_UNQUOTED(machine,"$machine",[machine])
+
+if test "$BOXBRAND" == "dinobot" -o "$BOXBRAND" == "abcom" -o "$STBPLATFORM" == "attohisi3798cv200" -o "$STBPLATFORM" == "attohisi3798mv200" -o "$STBPLATFORM" == "hdboxhisi3716cv100" -o "$STBPLATFORM" == "zgemmahisi3798mv200" -o "$STBPLATFORM" == "zgemmahisi3798mv310" -o "$STBPLATFORM" == "zgemmahisi3716mv430" -o "$STBPLATFORM" == "gfutureshisil" -o "$BOXBRAND" == "maxytec" -o "$STBPLATFORM" == "octagonhisil" -o "$STBPLATFORM" == "octagonhisilnew" -o "$STBPLATFORM" == "uclanhisil" -o "$STBPLATFORM" == "gbmv200" -o "$BOXTYPE" == "beyonwizv2" -o "$BOXTYPE" == "viper4k" -o "$STBPLATFORM" == "dagsmv200" -o "$STBPLATFORM" == "qviarthisil" -o "$BOXTYPE" == "ip8"; then
+	AC_DEFINE([HISILICON],[1],[build for HISILICON ])
+fi
+
 if test "$machine" == "u53" -o "$machine" == "u57" -o "$machine" == "viper4kv20"; then
 	AC_DEFINE([HISILICON],[1],[build for HISILICON ])
 fi

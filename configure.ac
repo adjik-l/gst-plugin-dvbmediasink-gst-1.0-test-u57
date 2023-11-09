@@ -300,19 +300,10 @@ AC_ARG_WITH(stbplatform,
 AC_SUBST(STBPLATFORM)
 AC_DEFINE_UNQUOTED(STBPLATFORM,"$STBPLATFORM",[stb platform])
 
-AC_ARG_WITH(machine,
-	AS_HELP_STRING([--with-machine],[build for machine, $withval]),
-	[machine=$withval],[machine=generic])
-AC_SUBST(machine)
-AC_DEFINE_UNQUOTED(machine,"$machine",[machine])
-
 if test "$BOXBRAND" == "dinobot" -o "$BOXBRAND" == "abcom" -o "$STBPLATFORM" == "attohisi3798cv200" -o "$STBPLATFORM" == "attohisi3798mv200" -o "$STBPLATFORM" == "hdboxhisi3716cv100" -o "$STBPLATFORM" == "zgemmahisi3798mv200" -o "$STBPLATFORM" == "zgemmahisi3798mv310" -o "$STBPLATFORM" == "zgemmahisi3716mv430" -o "$STBPLATFORM" == "gfutureshisil" -o "$BOXBRAND" == "maxytec" -o "$STBPLATFORM" == "octagonhisil" -o "$STBPLATFORM" == "octagonhisilnew" -o "$STBPLATFORM" == "uclanhisil" -o "$STBPLATFORM" == "gbmv200" -o "$BOXTYPE" == "beyonwizv2" -o "$BOXTYPE" == "viper4k" -o "$STBPLATFORM" == "dagsmv200" -o "$STBPLATFORM" == "qviarthisil" -o "$BOXTYPE" == "ip8"; then
 	AC_DEFINE([HISILICON],[1],[build for HISILICON ])
 fi
 
-if test "$machine" == "u53" -o "$machine" == "u57" -o "$machine" == "viper4kv20"; then
-	AC_DEFINE([HISILICON],[1],[build for HISILICON ])
-fi
 DTS_LIBS="-ldca $LIBM"
 AC_SUBST(DTS_LIBS)
 AM_CONDITIONAL(HAVE_DTSDOWNMIX, test "$have_dtsdownmix" = "yes")
